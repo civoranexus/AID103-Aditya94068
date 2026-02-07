@@ -1,0 +1,204 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CropGuard AI Design System - Agricultural Theme
+   Clean, farmer-friendly interface with green palette
+*/
+
+@layer base {
+  :root {
+    /* Core Agricultural Palette */
+    --background: 120 15% 97%;
+    --foreground: 120 25% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 120 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 120 25% 15%;
+
+    /* Primary: Fresh Green - Growth & Nature */
+    --primary: 142 55% 38%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Light Leaf */
+    --secondary: 120 30% 94%;
+    --secondary-foreground: 142 55% 28%;
+
+    /* Muted: Soft Earth */
+    --muted: 120 15% 93%;
+    --muted-foreground: 120 10% 45%;
+
+    /* Accent: Vibrant Lime */
+    --accent: 85 65% 50%;
+    --accent-foreground: 120 30% 10%;
+
+    /* Status Colors */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Warning: Golden Amber */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    /* Success: Deep Healthy Green */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    /* Info: Sky Blue */
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 120 15% 88%;
+    --input: 120 15% 88%;
+    --ring: 142 55% 38%;
+
+    --radius: 0.75rem;
+
+    /* Custom Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(142, 55%, 38%), hsl(85, 65%, 50%));
+    --gradient-hero: linear-gradient(180deg, hsl(120, 30%, 94%) 0%, hsl(0, 0%, 100%) 100%);
+
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -4px hsl(142 55% 38% / 0.15);
+    --shadow-card: 0 2px 12px -2px hsl(120 15% 15% / 0.08);
+
+    --sidebar-background: 120 20% 98%;
+    --sidebar-foreground: 120 25% 25%;
+    --sidebar-primary: 142 55% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 120 30% 94%;
+    --sidebar-accent-foreground: 142 55% 28%;
+    --sidebar-border: 120 15% 90%;
+    --sidebar-ring: 142 55% 38%;
+  }
+
+  .dark {
+    --background: 120 20% 8%;
+    --foreground: 120 10% 95%;
+
+    --card: 120 20% 12%;
+    --card-foreground: 120 10% 95%;
+
+    --popover: 120 20% 12%;
+    --popover-foreground: 120 10% 95%;
+
+    --primary: 142 55% 48%;
+    --primary-foreground: 120 30% 10%;
+
+    --secondary: 120 20% 18%;
+    --secondary-foreground: 120 10% 90%;
+
+    --muted: 120 15% 20%;
+    --muted-foreground: 120 10% 60%;
+
+    --accent: 85 65% 45%;
+    --accent-foreground: 120 30% 10%;
+
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 38 92% 45%;
+    --warning-foreground: 0 0% 100%;
+
+    --success: 142 76% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --info: 199 89% 55%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 120 15% 22%;
+    --input: 120 15% 22%;
+    --ring: 142 55% 48%;
+
+    --sidebar-background: 120 20% 10%;
+    --sidebar-foreground: 120 10% 90%;
+    --sidebar-primary: 142 55% 48%;
+    --sidebar-primary-foreground: 120 30% 10%;
+    --sidebar-accent: 120 20% 18%;
+    --sidebar-accent-foreground: 120 10% 90%;
+    --sidebar-border: 120 15% 22%;
+    --sidebar-ring: 142 55% 48%;
+  }
+}
+
+/* @layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+} */
+ @layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+
+@layer components {
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-md border border-border/50 shadow-lg;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 hsl(142 55% 38% / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 8px hsl(142 55% 38% / 0.1);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out forwards;
+}

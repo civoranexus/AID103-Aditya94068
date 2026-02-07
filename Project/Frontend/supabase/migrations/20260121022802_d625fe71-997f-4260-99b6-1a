@@ -1,0 +1,101 @@
+-- Create profiles table for farmer information
+CREATE TABLE public.profiles (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+  farm_name TEXT,
+  location TEXT,
+  crops_grown TEXT[],
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+);
+
+-- Create analysis_history table for saving crop disease detection results
+CREATE TABLE public.analysis_history (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  crop_type TEXT,
+  farm_location TEXT,
+  growth_stage TEXT,
+  image_url TEXT,
+  analysis_result JSONB NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+);
+
+-- Enable Row Level Security
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.analysis_history ENABLE ROW LEVEL SECURITY;
+
+-- Create security definer function for profile ownership check
+CREATE OR REPLACE FUNCTION public.is_owner_profile(_user_id UUID)
+RETURNS BOOLEAN
+LANGUAGE SQL
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT _user_id = auth.uid()
+$$;
+
+-- Create security definer function for analysis ownership check  
+CREATE OR REPLACE FUNCTION public.is_owner_analysis(_user_id UUID)
+RETURNS BOOLEAN
+LANGUAGE SQL
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT _user_id = auth.uid()
+$$;
+
+-- RLS Policies for profiles
+CREATE POLICY "Users can view their own profile"
+ON public.profiles FOR SELECT
+USING (public.is_owner_profile(user_id));
+
+CREATE POLICY "Users can create their own profile"
+ON public.profiles FOR INSERT
+WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own profile"
+ON public.profiles FOR UPDATE
+USING (public.is_owner_profile(user_id));
+
+CREATE POLICY "Users can delete their own profile"
+ON public.profiles FOR DELETE
+USING (public.is_owner_profile(user_id));
+
+-- RLS Policies for analysis_history
+CREATE POLICY "Users can view their own analysis history"
+ON public.analysis_history FOR SELECT
+USING (public.is_owner_analysis(user_id));
+
+CREATE POLICY "Users can create their own analysis"
+ON public.analysis_history FOR INSERT
+WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own analysis"
+ON public.analysis_history FOR UPDATE
+USING (public.is_owner_analysis(user_id));
+
+CREATE POLICY "Users can delete their own analysis"
+ON public.analysis_history FOR DELETE
+USING (public.is_owner_analysis(user_id));
+
+-- Create function to update timestamps
+CREATE OR REPLACE FUNCTION public.update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SET search_path = public;
+
+-- Create trigger for automatic timestamp updates on profiles
+CREATE TRIGGER update_profiles_updated_at
+BEFORE UPDATE ON public.profiles
+FOR EACH ROW
+EXECUTE FUNCTION public.update_updated_at_column();
+
+-- Create index for faster queries
+CREATE INDEX idx_analysis_history_user_id ON public.analysis_history(user_id);
+CREATE INDEX idx_analysis_history_created_at ON public.analysis_history(created_at DESC);
